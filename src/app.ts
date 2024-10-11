@@ -3,6 +3,7 @@ interface Cost {
   name: string;
   value: number;
   date?: string;
+  category?: string;
 }
 
 let salary = 0;
@@ -42,6 +43,18 @@ const fixedCostList = document.getElementById(
 const flexibleCostList = document.getElementById(
   "flexible-cost-list"
 ) as HTMLUListElement;
+const fixedCostCategoryInput = document.getElementById(
+  "fixed-cost-category"
+) as HTMLInputElement;
+const flexibleCostCategoryInput = document.getElementById(
+  "flexible-cost-category"
+) as HTMLInputElement;
+const filterStartDateInput = document.getElementById(
+  "filter-start-date"
+) as HTMLInputElement;
+const filterEndDateInput = document.getElementById(
+  "filter-end-date"
+) as HTMLInputElement;
 
 function updateLocalStorage() {
   const data = {
@@ -84,7 +97,7 @@ function updateRemaining() {
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
   const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0"); // Os meses começam em 0
+  const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = date.getFullYear();
   return `${day}/${month}/${year}`;
 }
@@ -102,7 +115,11 @@ function renderCosts() {
     costInfo.className = "flex-1";
     costInfo.innerHTML = `<span class="font-semibold">${
       cost.name
-    }</span>: R$ ${cost.value.toFixed(2)}`;
+    }</span>: R$ ${cost.value.toFixed(2)} ${
+      cost.category
+        ? `<span class="text-blue-500">(${cost.category})</span>`
+        : ""
+    }`;
 
     li.appendChild(costInfo);
     li.addEventListener("click", () => editCost(cost, "fixed"));
@@ -133,7 +150,11 @@ function renderCosts() {
       2
     )} <span class="text-gray-500 text-sm">(Data: ${
       cost.date ? formatDate(cost.date) : "Data não disponível"
-    })</span>`;
+    })</span> ${
+      cost.category
+        ? `<span class="text-blue-500">(${cost.category})</span>`
+        : ""
+    }`;
 
     li.appendChild(costInfo);
     li.addEventListener("click", () => editCost(cost, "flexible"));
@@ -158,11 +179,13 @@ function editCost(cost: Cost, type: "fixed" | "flexible") {
   if (type === "fixed") {
     fixedCostNameInput.value = cost.name;
     fixedCostValueInput.value = cost.value.toString();
+    fixedCostCategoryInput.value = cost.category || "";
     removeCost(cost.id, "fixed");
   } else {
     flexibleCostNameInput.value = cost.name;
     flexibleCostValueInput.value = cost.value.toString();
     flexibleCostDateInput.value = cost.date || "";
+    flexibleCostCategoryInput.value = cost.category || "";
     removeCost(cost.id, "flexible");
   }
 }
@@ -179,15 +202,14 @@ function removeCost(id: number, type: "fixed" | "flexible") {
 
 formFixedCost.addEventListener("submit", (e) => {
   e.preventDefault();
-  if (!salary) {
-    salary = parseFloat(salaryInput.value);
-  }
   const name = fixedCostNameInput.value.trim();
   const value = parseFloat(fixedCostValueInput.value);
+  const category = fixedCostCategoryInput.value.trim();
   if (name && !isNaN(value)) {
-    fixedCosts.push({ id: currentId++, name, value });
+    fixedCosts.push({ id: currentId++, name, value, category });
     fixedCostNameInput.value = "";
     fixedCostValueInput.value = "";
+    fixedCostCategoryInput.value = "";
     renderCosts();
     updateRemaining();
   }
@@ -198,22 +220,20 @@ formFlexibleCost.addEventListener("submit", (e) => {
   const name = flexibleCostNameInput.value.trim();
   const value = parseFloat(flexibleCostValueInput.value);
   const date = flexibleCostDateInput.value;
+  const category = flexibleCostCategoryInput.value.trim();
   if (name && !isNaN(value) && date) {
-    flexibleCosts.push({ id: currentId++, name, value, date });
+    flexibleCosts.push({ id: currentId++, name, value, date, category });
     flexibleCostNameInput.value = "";
     flexibleCostValueInput.value = "";
     flexibleCostDateInput.value = "";
+    flexibleCostCategoryInput.value = "";
     renderCosts();
     updateRemaining();
   }
 });
 
 function exportData() {
-  const data = {
-    salary,
-    fixedCosts,
-    flexibleCosts,
-  };
+  const data = { salary, fixedCosts, flexibleCosts };
   const dataStr = JSON.stringify(data);
   const blob = new Blob([dataStr], { type: "application/json" });
   const url = URL.createObjectURL(blob);
@@ -246,6 +266,176 @@ function importData(event: Event) {
 
 document.getElementById("export-data")?.addEventListener("click", exportData);
 document.getElementById("import-data")?.addEventListener("change", importData);
+
+document
+  .getElementById("filter-costs")
+  ?.addEventListener("click", filterFlexibleCosts);
+document.getElementById("clear-filter")?.addEventListener("click", () => {
+  filterStartDateInput.value = "";
+  filterEndDateInput.value = "";
+  renderCosts();
+});
+
+function filterFlexibleCosts() {
+  const startDate = filterStartDateInput.value
+    ? new Date(filterStartDateInput.value)
+    : null;
+  const endDate = filterEndDateInput.value
+    ? new Date(filterEndDateInput.value)
+    : null;
+
+  const filteredCosts = flexibleCosts.filter((cost) => {
+    const costDate = new Date(cost.date!);
+    if (startDate && costDate < startDate) return false;
+    if (endDate && costDate > endDate) return false;
+    return true;
+  });
+
+  renderFilteredFlexibleCosts(filteredCosts);
+}
+
+function renderFilteredFlexibleCosts(filteredCosts: Cost[]) {
+  flexibleCostList.innerHTML = "";
+
+  filteredCosts.forEach((cost) => {
+    const li = document.createElement("li");
+    li.className =
+      "flex justify-between items-center p-4 border rounded-lg bg-white shadow-md hover:shadow-lg transition-shadow duration-300";
+
+    const costInfo = document.createElement("div");
+    costInfo.className = "flex-1";
+    costInfo.innerHTML = `<span class="font-semibold">${
+      cost.name
+    }</span>: R$ ${cost.value.toFixed(
+      2
+    )} <span class="text-gray-500 text-sm">(Data: ${
+      cost.date ? formatDate(cost.date) : "Data não disponível"
+    })</span> ${
+      cost.category
+        ? `<span class="text-blue-500">(${cost.category})</span>`
+        : ""
+    }`;
+
+    li.appendChild(costInfo);
+
+    const removeButton = document.createElement("button");
+    removeButton.textContent = "Remover";
+    removeButton.className =
+      "text-red-500 ml-4 px-3 py-1 border border-red-500 rounded-full hover:bg-red-500 hover:text-white transition-colors duration-200";
+    removeButton.addEventListener("click", (e) => {
+      e.stopPropagation();
+      removeCost(cost.id, "flexible");
+    });
+
+    li.appendChild(removeButton);
+    flexibleCostList.appendChild(li);
+  });
+}
+
+const filterCategoryInput = document.getElementById(
+  "filter-category"
+) as HTMLInputElement;
+
+document
+  .getElementById("filter-category-button")
+  ?.addEventListener("click", filterByCategory);
+document
+  .getElementById("clear-category-filter")
+  ?.addEventListener("click", () => {
+    filterCategoryInput.value = "";
+    renderCosts();
+  });
+
+function filterByCategory() {
+  const category = filterCategoryInput.value.trim().toLowerCase();
+  if (!category) {
+    renderCosts();
+    return;
+  }
+
+  const filteredFixedCosts = fixedCosts.filter((cost) =>
+    cost.category?.toLowerCase().includes(category)
+  );
+  const filteredFlexibleCosts = flexibleCosts.filter((cost) =>
+    cost.category?.toLowerCase().includes(category)
+  );
+
+  renderFilteredCosts(filteredFixedCosts, filteredFlexibleCosts);
+}
+
+function renderFilteredCosts(
+  filteredFixedCosts: Cost[],
+  filteredFlexibleCosts: Cost[]
+) {
+  fixedCostList.innerHTML = "";
+  flexibleCostList.innerHTML = "";
+
+  filteredFixedCosts.forEach((cost) => {
+    const li = document.createElement("li");
+    li.className =
+      "flex justify-between items-center p-4 border rounded-lg bg-white shadow-md hover:shadow-lg transition-shadow duration-300";
+
+    const costInfo = document.createElement("div");
+    costInfo.className = "flex-1";
+    costInfo.innerHTML = `<span class="font-semibold">${
+      cost.name
+    }</span>: R$ ${cost.value.toFixed(2)} ${
+      cost.category
+        ? `<span class="text-blue-500">(${cost.category})</span>`
+        : ""
+    }`;
+
+    li.appendChild(costInfo);
+    li.addEventListener("click", () => editCost(cost, "fixed"));
+
+    const removeButton = document.createElement("button");
+    removeButton.textContent = "Remover";
+    removeButton.className =
+      "text-red-500 ml-4 px-3 py-1 border border-red-500 rounded-full hover:bg-red-500 hover:text-white transition-colors duration-200";
+    removeButton.addEventListener("click", (e) => {
+      e.stopPropagation();
+      removeCost(cost.id, "fixed");
+    });
+
+    li.appendChild(removeButton);
+    fixedCostList.appendChild(li);
+  });
+
+  filteredFlexibleCosts.forEach((cost) => {
+    const li = document.createElement("li");
+    li.className =
+      "flex justify-between items-center p-4 border rounded-lg bg-white shadow-md hover:shadow-lg transition-shadow duration-300";
+
+    const costInfo = document.createElement("div");
+    costInfo.className = "flex-1";
+    costInfo.innerHTML = `<span class="font-semibold">${
+      cost.name
+    }</span>: R$ ${cost.value.toFixed(
+      2
+    )} <span class="text-gray-500 text-sm">(Data: ${
+      cost.date ? formatDate(cost.date) : "Data não disponível"
+    })</span> ${
+      cost.category
+        ? `<span class="text-blue-500">(${cost.category})</span>`
+        : ""
+    }`;
+
+    li.appendChild(costInfo);
+    li.addEventListener("click", () => editCost(cost, "flexible"));
+
+    const removeButton = document.createElement("button");
+    removeButton.textContent = "Remover";
+    removeButton.className =
+      "text-red-500 ml-4 px-3 py-1 border border-red-500 rounded-full hover:bg-red-500 hover:text-white transition-colors duration-200";
+    removeButton.addEventListener("click", (e) => {
+      e.stopPropagation();
+      removeCost(cost.id, "flexible");
+    });
+
+    li.appendChild(removeButton);
+    flexibleCostList.appendChild(li);
+  });
+}
 
 // Carregar dados do localStorage ao iniciar
 loadFromLocalStorage();
