@@ -43,6 +43,27 @@ const flexibleCostList = document.getElementById(
   "flexible-cost-list"
 ) as HTMLUListElement;
 
+function updateLocalStorage() {
+  const data = {
+    salary,
+    fixedCosts,
+    flexibleCosts,
+  };
+  localStorage.setItem("financeData", JSON.stringify(data));
+}
+
+function loadFromLocalStorage() {
+  const savedData = localStorage.getItem("financeData");
+  if (savedData) {
+    const data = JSON.parse(savedData);
+    salary = data.salary || 0;
+    fixedCosts = data.fixedCosts || [];
+    flexibleCosts = data.flexibleCosts || [];
+    updateRemaining();
+    renderCosts();
+  }
+}
+
 function updateRemaining() {
   const totalFixed = fixedCosts.reduce((acc, cost) => acc + cost.value, 0);
   const totalFlexible = flexibleCosts.reduce(
@@ -60,6 +81,14 @@ function updateRemaining() {
     remaining >= 0 ? "text-green-500" : "text-red-500";
 }
 
+function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Os meses começam em 0
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
 function renderCosts() {
   fixedCostList.innerHTML = "";
   flexibleCostList.innerHTML = "";
@@ -67,14 +96,21 @@ function renderCosts() {
   fixedCosts.forEach((cost) => {
     const li = document.createElement("li");
     li.className =
-      "flex justify-between items-center p-2 border rounded bg-gray-50 shadow-sm";
-    li.textContent = `${cost.name}: R$ ${cost.value.toFixed(2)}`;
+      "flex justify-between items-center p-4 border rounded-lg bg-white shadow-md hover:shadow-lg transition-shadow duration-300";
+
+    const costInfo = document.createElement("div");
+    costInfo.className = "flex-1";
+    costInfo.innerHTML = `<span class="font-semibold">${
+      cost.name
+    }</span>: R$ ${cost.value.toFixed(2)}`;
+
+    li.appendChild(costInfo);
     li.addEventListener("click", () => editCost(cost, "fixed"));
 
     const removeButton = document.createElement("button");
     removeButton.textContent = "Remover";
     removeButton.className =
-      "text-red-500 ml-4 px-2 py-1 border border-red-500 rounded hover:bg-red-500 hover:text-white transition";
+      "text-red-500 ml-4 px-3 py-1 border border-red-500 rounded-full hover:bg-red-500 hover:text-white transition-colors duration-200";
     removeButton.addEventListener("click", (e) => {
       e.stopPropagation();
       removeCost(cost.id, "fixed");
@@ -87,16 +123,25 @@ function renderCosts() {
   flexibleCosts.forEach((cost) => {
     const li = document.createElement("li");
     li.className =
-      "flex justify-between items-center p-2 border rounded bg-gray-50 shadow-sm";
-    li.textContent = `${cost.name}: R$ ${cost.value.toFixed(2)} (Data: ${
-      cost.date
-    })`;
+      "flex justify-between items-center p-4 border rounded-lg bg-white shadow-md hover:shadow-lg transition-shadow duration-300";
+
+    const costInfo = document.createElement("div");
+    costInfo.className = "flex-1";
+    costInfo.innerHTML = `<span class="font-semibold">${
+      cost.name
+    }</span>: R$ ${cost.value.toFixed(
+      2
+    )} <span class="text-gray-500 text-sm">(Data: ${
+      cost.date ? formatDate(cost.date) : "Data não disponível"
+    })</span>`;
+
+    li.appendChild(costInfo);
     li.addEventListener("click", () => editCost(cost, "flexible"));
 
     const removeButton = document.createElement("button");
     removeButton.textContent = "Remover";
     removeButton.className =
-      "text-red-500 ml-4 px-2 py-1 border border-red-500 rounded hover:bg-red-500 hover:text-white transition";
+      "text-red-500 ml-4 px-3 py-1 border border-red-500 rounded-full hover:bg-red-500 hover:text-white transition-colors duration-200";
     removeButton.addEventListener("click", (e) => {
       e.stopPropagation();
       removeCost(cost.id, "flexible");
@@ -105,6 +150,8 @@ function renderCosts() {
     li.appendChild(removeButton);
     flexibleCostList.appendChild(li);
   });
+
+  updateLocalStorage();
 }
 
 function editCost(cost: Cost, type: "fixed" | "flexible") {
@@ -160,3 +207,45 @@ formFlexibleCost.addEventListener("submit", (e) => {
     updateRemaining();
   }
 });
+
+function exportData() {
+  const data = {
+    salary,
+    fixedCosts,
+    flexibleCosts,
+  };
+  const dataStr = JSON.stringify(data);
+  const blob = new Blob([dataStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "finance_data.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importData(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const result = e.target?.result;
+      if (result) {
+        const data = JSON.parse(result as string);
+        salary = data.salary || 0;
+        fixedCosts = data.fixedCosts || [];
+        flexibleCosts = data.flexibleCosts || [];
+        updateRemaining();
+        renderCosts();
+      }
+    };
+    reader.readAsText(file);
+  }
+}
+
+document.getElementById("export-data")?.addEventListener("click", exportData);
+document.getElementById("import-data")?.addEventListener("change", importData);
+
+// Carregar dados do localStorage ao iniciar
+loadFromLocalStorage();
