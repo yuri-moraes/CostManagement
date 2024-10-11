@@ -7,20 +7,30 @@
     <script defer src="./dist/app.js"></script>
     <link href="./dist/style.css" rel="stylesheet" />
   </head>
-  <body class="bg-gradient-to-r from-blue-100 to-blue-50 min-h-screen p-6">
-    <div class="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg">
-      <h1 class="text-3xl font-bold mb-6 text-blue-700">Gestão de Custos</h1>
+  <body
+    class="bg-gradient-to-r from-blue-100 to-blue-50 min-h-screen p-4 md:p-6"
+  >
+    <div class="max-w-4xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg">
+      <h1 class="text-2xl md:text-3xl font-bold mb-4 md:mb-6 text-blue-700">
+        Gestão de Custos
+      </h1>
 
-      <div class="mt-8 bg-gray-50 p-4 rounded-lg shadow-sm">
-        <h2 class="text-xl font-semibold text-blue-600">Resumo</h2>
-        <p id="total-expenses" class="mt-2 text-lg">Custo total: R$ 0,00</p>
-        <p id="remaining" class="text-green-500 text-lg">Sobra: R$ 0,00</p>
+      <div class="mt-6 md:mt-8 bg-gray-50 p-4 rounded-lg shadow-sm">
+        <h2 class="text-lg md:text-xl font-semibold text-blue-600">Resumo</h2>
+        <p id="total-expenses" class="mt-2 text-base md:text-lg">
+          Custo total: R$ 0,00
+        </p>
+        <p id="remaining" class="text-green-500 text-base md:text-lg">
+          Sobra: R$ 0,00
+        </p>
       </div>
 
-      <div class="grid grid-cols-1 mt-3 md:grid-cols-2 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4 md:mt-6">
         <!-- Formulário de Custos Fixos -->
         <div>
-          <h2 class="text-xl font-semibold mb-4 text-blue-600">Custos Fixos</h2>
+          <h2 class="text-lg md:text-xl font-semibold mb-3 text-blue-600">
+            Custos Fixos
+          </h2>
           <form
             id="form-fixed-cost"
             class="flex flex-col gap-4 bg-gray-50 p-4 rounded-lg shadow-inner"
@@ -61,11 +71,11 @@
             </button>
           </form>
 
-          <div class="mt-6 bg-blue-50 p-4 rounded-lg shadow-sm">
+          <div class="mt-4 md:mt-6 bg-blue-50 p-4 rounded-lg shadow-sm">
             <h3 class="text-lg font-semibold text-blue-600">
               Filtrar por Categoria
             </h3>
-            <div class="flex gap-2 mt-2">
+            <div class="flex flex-col gap-2 mt-2 md:flex-row">
               <input
                 type="text"
                 id="filter-category"
@@ -92,7 +102,7 @@
 
         <!-- Formulário de Custos Flexíveis -->
         <div>
-          <h2 class="text-xl font-semibold mb-4 text-blue-600">
+          <h2 class="text-lg md:text-xl font-semibold mb-3 text-blue-600">
             Custos Flexíveis
           </h2>
           <form
@@ -132,11 +142,11 @@
             </button>
           </form>
 
-          <div class="mt-6 bg-blue-50 p-4 rounded-lg shadow-sm">
+          <div class="mt-4 md:mt-6 bg-blue-50 p-4 rounded-lg shadow-sm">
             <h3 class="text-lg font-semibold text-blue-600">
               Filtrar Custos Flexíveis por Data
             </h3>
-            <div class="flex gap-2 mt-2">
+            <div class="flex flex-col gap-2 mt-2 md:flex-row">
               <input
                 type="date"
                 id="filter-start-date"
@@ -150,7 +160,7 @@
                 placeholder="Data Final"
               />
             </div>
-            <div class="flex gap-2 mt-2">
+            <div class="flex flex-col gap-2 mt-2 md:flex-row">
               <button
                 id="filter-costs"
                 class="bg-blue-500 text-white p-3 rounded-lg flex-1 hover:bg-blue-600 transition duration-200"
@@ -170,10 +180,10 @@
         </div>
       </div>
 
-      <div class="mt-8 flex gap-4">
+      <div class="mt-6 md:mt-8 flex flex-col gap-3 md:flex-row">
         <button
           id="export-data"
-          class="bg-green-500 text-white p-3 rounded-lg hover:bg-green-600 transition duration-200"
+          class="bg-green-500 text-white p-3 rounded-lg hover:bg-green-600 transition duration-200 flex-1"
         >
           Exportar Dados
         </button>
