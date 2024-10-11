@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestão de Custos</title>
+    <script defer src="./dist/app.js"></script>
+    <link href="./dist/style.css" rel="stylesheet" />
+  </head>
+  <body class="bg-gray-100 p-6">
+    <div class="max-w-4xl mx-auto bg-white p-8 shadow-md">
+      <h1 class="text-2xl font-bold mb-4">Gestão de Custos</h1>
+
+      <div class="grid grid-cols-2 gap-8">
+        <!-- Formulário de Custos Fixos -->
+        <div>
+          <h2 class="text-xl font-semibold mb-2">Custos Fixos</h2>
+          <form id="form-fixed-cost" class="flex flex-col gap-4">
+            <input
+              type="number"
+              step="0.01"
+              id="salary"
+              placeholder="Salário"
+              class="p-2 border rounded"
+              min="0"
+            />
+            <input
+              type="text"
+              id="fixed-cost-name"
+              placeholder="Nome do custo"
+              class="p-2 border rounded"
+            />
+            <input
+              type="number"
+              step="0.01"
+              id="fixed-cost-value"
+              placeholder="Valor"
+              class="p-2 border rounded"
+              min="0"
+            />
+            <button type="submit" class="bg-blue-500 text-white p-2 rounded">
+              Adicionar Custo Fixo
+            </button>
+          </form>
+          <ul id="fixed-cost-list" class="mt-4 space-y-2"></ul>
+        </div>
+
+        <!-- Formulário de Custos Flexíveis -->
+        <div>
+          <h2 class="text-xl font-semibold mb-2">Custos Flexíveis</h2>
+          <form id="form-flexible-cost" class="flex flex-col gap-4">
+            <input
+              type="text"
+              id="flexible-cost-name"
+              placeholder="Nome do custo"
+              class="p-2 border rounded"
+            />
+            <input
+              type="number"
+              step="0.01"
+              id="flexible-cost-value"
+              placeholder="Valor do custo"
+              class="p-2 border rounded"
+              min="0"
+            />
+            <input
+              type="date"
+              id="flexible-cost-date"
+              class="p-2 border rounded"
+            />
+            <button type="submit" class="bg-blue-500 text-white p-2 rounded">
+              Adicionar Custo Flexível
+            </button>
+          </form>
+          <ul id="flexible-cost-list" class="mt-4 space-y-2"></ul>
+        </div>
+      </div>
+
+      <div class="mt-8">
+        <h2 class="text-xl font-semibold">Resumo</h2>
+        <p id="total-expenses" class="mt-2">Custo total: R$ 0,00</p>
+        <p id="remaining" class="text-green-500">Sobra: R$ 0,00</p>
+      </div>
+    </div>
+  </body>
+</html>

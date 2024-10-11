@@ -1,0 +1,24 @@
+{
+  "name": "financeiro",
+  "version": "1.0.0",
+  "main": "tailwind.config.js",
+  "scripts": {
+    "start": "concurrently \"npm run build:css\" \"npm run build:ts\" \"npm run serve\"",
+    "build:css": "tailwindcss -i ./src/style.css -o ./dist/style.css --watch",
+    "build:ts": "tsc --watch",
+    "serve": "lite-server",
+    "build": "npm run build:css && tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "concurrently": "^9.0.1",
+    "lite-server": "^2.6.1",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13",
+    "typescript": "^5.6.3"
+  }
+}
