@@ -1,3 +1,47 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Estilos para o modo escuro */
+.dark-mode {
+  @apply bg-gray-900 text-white;
+}
+
+.dark-mode .bg-white {
+  @apply bg-gray-800;
+}
+
+.dark-mode .text-blue-700,
+.dark-mode .text-blue-600 {
+  @apply text-blue-400;
+}
+
+.dark-mode .bg-gray-50 {
+  @apply bg-gray-800;
+}
+
+.dark-mode input,
+.dark-mode select,
+.dark-mode textarea {
+  @apply bg-gray-700 text-white border-gray-600;
+}
+
+.dark-mode .bg-blue-50 {
+  @apply bg-gray-700;
+}
+
+.dark-mode .bg-blue-500 {
+  @apply bg-blue-600;
+}
+
+.dark-mode .bg-gray-500 {
+  @apply bg-gray-600;
+}
+
+.dark-mode .text-green-500 {
+  @apply text-green-400;
+}
+
+.dark-mode .text-red-500 {
+  @apply text-red-400;
+}

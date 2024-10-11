@@ -12,6 +12,11 @@ let flexibleCosts: Cost[] = [];
 let currentId = 1;
 
 const salaryInput = document.getElementById("salary") as HTMLInputElement;
+salaryInput.addEventListener("input", () => {
+  salary = parseFloat(salaryInput.value) || 0;
+  updateRemaining();
+});
+
 const fixedCostNameInput = document.getElementById(
   "fixed-cost-name"
 ) as HTMLInputElement;
@@ -55,7 +60,76 @@ const filterStartDateInput = document.getElementById(
 const filterEndDateInput = document.getElementById(
   "filter-end-date"
 ) as HTMLInputElement;
+const toggleThemeButton = document.getElementById(
+  "toggle-theme"
+) as HTMLButtonElement;
+const themeIcon = document.getElementById("theme-icon") as HTMLElement;
 
+function toggleTheme() {
+  document.body.classList.toggle("dark-mode");
+  if (document.body.classList.contains("dark-mode")) {
+    themeIcon.innerHTML = `
+      <!-- Novo ícone de Sol -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/>
+        <line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/>
+        <line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+    `;
+    localStorage.setItem("theme", "dark");
+  } else {
+    themeIcon.innerHTML = `
+      <!-- Ícone de Lua para o modo claro -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+           viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" />
+      </svg>
+    `;
+    localStorage.setItem("theme", "light");
+  }
+}
+
+toggleThemeButton.addEventListener("click", toggleTheme);
+
+// Carregar tema ao iniciar
+function loadTheme() {
+  const theme = localStorage.getItem("theme");
+  if (theme === "dark") {
+    document.body.classList.add("dark-mode");
+    themeIcon.innerHTML = `
+      <!-- Novo ícone de Sol -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/>
+        <line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/>
+        <line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+    `;
+  } else {
+    themeIcon.innerHTML = `
+      <!-- Ícone de Lua para o modo claro -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+           viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" />
+      </svg>
+    `;
+  }
+}
 function updateLocalStorage() {
   const data = {
     salary,
@@ -70,6 +144,7 @@ function loadFromLocalStorage() {
   if (savedData) {
     const data = JSON.parse(savedData);
     salary = data.salary || 0;
+    salaryInput.value = salary.toString();
     fixedCosts = data.fixedCosts || [];
     flexibleCosts = data.flexibleCosts || [];
     updateRemaining();
@@ -125,9 +200,9 @@ function renderCosts() {
     li.addEventListener("click", () => editCost(cost, "fixed"));
 
     const removeButton = document.createElement("button");
-    removeButton.textContent = "Remover";
+    removeButton.innerHTML = "Remover";
     removeButton.className =
-      "text-red-500 ml-4 px-3 py-1 border border-red-500 rounded-full hover:bg-red-500 hover:text-white transition-colors duration-200";
+      "ml-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 transition duration-200";
     removeButton.addEventListener("click", (e) => {
       e.stopPropagation();
       removeCost(cost.id, "fixed");
@@ -162,7 +237,7 @@ function renderCosts() {
     const removeButton = document.createElement("button");
     removeButton.textContent = "Remover";
     removeButton.className =
-      "text-red-500 ml-4 px-3 py-1 border border-red-500 rounded-full hover:bg-red-500 hover:text-white transition-colors duration-200";
+      "ml-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 transition duration-200";
     removeButton.addEventListener("click", (e) => {
       e.stopPropagation();
       removeCost(cost.id, "flexible");
@@ -321,7 +396,7 @@ function renderFilteredFlexibleCosts(filteredCosts: Cost[]) {
     const removeButton = document.createElement("button");
     removeButton.textContent = "Remover";
     removeButton.className =
-      "text-red-500 ml-4 px-3 py-1 border border-red-500 rounded-full hover:bg-red-500 hover:text-white transition-colors duration-200";
+      "ml-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 transition duration-200";
     removeButton.addEventListener("click", (e) => {
       e.stopPropagation();
       removeCost(cost.id, "flexible");
@@ -391,7 +466,7 @@ function renderFilteredCosts(
     const removeButton = document.createElement("button");
     removeButton.textContent = "Remover";
     removeButton.className =
-      "text-red-500 ml-4 px-3 py-1 border border-red-500 rounded-full hover:bg-red-500 hover:text-white transition-colors duration-200";
+      "ml-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 transition duration-200";
     removeButton.addEventListener("click", (e) => {
       e.stopPropagation();
       removeCost(cost.id, "fixed");
@@ -426,7 +501,7 @@ function renderFilteredCosts(
     const removeButton = document.createElement("button");
     removeButton.textContent = "Remover";
     removeButton.className =
-      "text-red-500 ml-4 px-3 py-1 border border-red-500 rounded-full hover:bg-red-500 hover:text-white transition-colors duration-200";
+      "ml-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 transition duration-200";
     removeButton.addEventListener("click", (e) => {
       e.stopPropagation();
       removeCost(cost.id, "flexible");
@@ -437,5 +512,6 @@ function renderFilteredCosts(
   });
 }
 
+loadTheme();
 // Carregar dados do localStorage ao iniciar
 loadFromLocalStorage();

@@ -8,8 +8,25 @@
     <link href="./dist/style.css" rel="stylesheet" />
   </head>
   <body
-    class="bg-gradient-to-r from-blue-100 to-blue-50 min-h-screen p-4 md:p-6"
+    class="bg-gradient-to-r from-blue-100 to-blue-50 min-h-screen p-4 md:p-6 relative"
   >
+    <button
+      id="toggle-theme"
+      class="absolute top-4 right-4 bg-gray-200 text-gray-800 p-2 rounded-full focus:outline-none hover:bg-gray-300 transition duration-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+    >
+      <!-- Ícone do Sol/Lua -->
+      <svg
+        id="theme-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <!-- O conteúdo do ícone será atualizado via JavaScript -->
+      </svg>
+    </button>
+
     <div class="max-w-4xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg">
       <h1 class="text-2xl md:text-3xl font-bold mb-4 md:mb-6 text-blue-700">
         Gestão de Custos
