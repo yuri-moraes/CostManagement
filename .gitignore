@@ -1,5 +1,12 @@
 # Dependências do node
 node_modules/
+# Ignorar todos os arquivos dentro da pasta public
+public/*
+# Não ignorar o index.html na pasta public
+!public/index.html
+# Ignorar especificamente o app.js e o style.css
+public/app.js
+public/style.css
 # macOS
 .DS_Store
 # Windows
