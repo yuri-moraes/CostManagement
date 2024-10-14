@@ -1,3 +1,16 @@
-/node_modules
-/dist
-.vercel
+# Dependências do node
+node_modules/
+# Arquivos compilados
+public/
+# macOS
+.DS_Store
+# Windows
+Thumbs.db
+# Logs
+npm-debug.log*
+# Arquivos de saída do TypeScript
+*.tsbuildinfo
+# Cache de pacotes e ferramentas
+.cache/
+dist/
+build/
