@@ -6,11 +6,12 @@
     "node": "20.15"
   },
   "scripts": {
-    "start": "concurrently \"npm run build:css --watch\" \"npm run build:ts --watch\" \"npm run serve\"",
-    "build:css": "tailwindcss -i ./src/style.css -o ./dist/style.css",
+    "build:css": "tailwindcss -i ./src/style.css -o ./public/style.css",
     "build:ts": "tsc",
+    "build": "npm run build:css && npm run build:ts",
+    "start": "concurrently \"npm run build:css --watch\" \"npm run build:ts --watch\" \"npm run serve\"",
     "serve": "lite-server",
-    "build": "npm run build:css && tsc"
+    "dev": "npm run start"
   },
   "keywords": [],
   "author": "",
