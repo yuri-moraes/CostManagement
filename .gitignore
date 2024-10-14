@@ -1,7 +1,5 @@
 # Dependências do node
 node_modules/
-# Arquivos compilados
-public/
 # macOS
 .DS_Store
 # Windows

@@ -9,6 +9,7 @@
     "build:css": "npx tailwindcss -i ./src/style.css -o ./public/style.css",
     "build:ts": "tsc",
     "build": "npm run build:ts && npm run build:css",
+    "vercel-build": "npm run build",
     "start": "concurrently \"npm run build:css --watch\" \"npm run build:ts --watch\" \"npm run serve\"",
     "serve": "lite-server",
     "dev": "tsx"

@@ -1,14 +1,6 @@
 {
-  "builds": [
-    {
-      "src": "index.html",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
-  ]
+  "version": 2,
+  "buildCommand": "npm run vercel-build",
+  "outputDirectory": "public",
+  "routes": [{ "src": "/(.*)", "dest": "/index.html" }]
 }
