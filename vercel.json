@@ -3,12 +3,28 @@
     {
       "src": "index.html",
       "use": "@vercel/static"
+    },
+    {
+      "src": "public/app.js",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "public/style.css",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
       "dest": "/index.html"
+    },
+    {
+      "src": "/app.js",
+      "dest": "/public/app.js"
+    },
+    {
+      "src": "/style.css",
+      "dest": "/public/style.css"
     }
   ]
 }
